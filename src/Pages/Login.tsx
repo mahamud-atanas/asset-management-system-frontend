@@ -3,7 +3,7 @@ import { useAuth } from "../Auth/authContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion"; // Import Framer Motion for animations
-import "./login.css"; // Import custom styles
+import "./Login.css"; // Import custom styles
 
 const Login = () => {
   const [email, setEmail] = useState("");
