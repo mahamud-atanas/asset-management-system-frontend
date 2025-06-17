@@ -209,7 +209,7 @@ const AssetForm: React.FC = () => {
               {/* Invoice Number Field (Manually Rendered) */}
               <div className="col-md-6">
                 <div className="form-group">
-                  <label htmlFor="invoiceNumber" className="text-secondary">Invoice Number</label>
+                  <label htmlFor="invoiceNumber" className="text-secondary">Voucher No</label>
                   <input
                     type="text"
                     className="form-control"
