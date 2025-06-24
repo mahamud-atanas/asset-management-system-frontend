@@ -19,7 +19,7 @@ const Login = () => {
     setLoading(true); // Show loading state
 
     try {
-      const response = await axios.post("http://localhost:3000/api/auth", { email, password });
+      const response = await axios.post("https://asset-backend-1976da1bf0ad.herokuapp.com/api/auth", { email, password });
       login(response.data.token);
       navigate("/dashboard");
     } catch (error) {
