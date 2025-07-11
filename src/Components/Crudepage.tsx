@@ -210,7 +210,7 @@ const Crudepage = () => {
 
   useEffect(() => {
     axios
-      .get<Asset[]>("http://localhost:3000/api/asset")
+      .get<Asset[]>("https://asset-backend-1976da1bf0ad.herokuapp.com/api/asset")
       .then((res) => setAssets(res.data))
       .catch((err) => console.error("Error fetching assets:", err));
   }, []);
@@ -270,7 +270,7 @@ const Crudepage = () => {
         departmentManager: departmentManager._id,
       };
 
-      await axios.put(`http://localhost:3000/api/asset/${_id}`, updateData, {
+      await axios.put(`https://asset-backend-1976da1bf0ad.herokuapp.com/api/asset/${_id}`, updateData, {
         headers: {
           "Content-Type": "application/json",
           "x-auth-token": token,
