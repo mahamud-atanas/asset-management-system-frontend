@@ -58,11 +58,11 @@ const Dashboard = () => {
     const fetchData = async () => {
       try {
         // Fetch total users
-        const usersResponse = await axios.get<{ length: number }>("http://localhost:3000/api/users");
+        const usersResponse = await axios.get<{ length: number }>("https://asset-backend-1976da1bf0ad.herokuapp.com/api/users");
         setTotalUsers(usersResponse.data.length);
 
         // Fetch all assets
-        const assetsResponse = await axios.get<AssetType[]>("http://localhost:3000/api/asset");
+        const assetsResponse = await axios.get<AssetType[]>("https://asset-backend-1976da1bf0ad.herokuapp.com/api/asset");
         const assets = assetsResponse.data;
         setTotalAssets(assets.length);
 
