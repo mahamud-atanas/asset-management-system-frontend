@@ -61,7 +61,7 @@ const ReportPage: React.FC = () => {
         throw new Error("No authentication token found. Please log in again.");
       }
 
-      const response = await axios.get("http://localhost:3000/api/asset", {
+      const response = await axios.get("https://asset-backend-1976da1bf0ad.herokuapp.com/api/asset", {
         headers: { "x-auth-token": token },
       });
 
@@ -97,7 +97,7 @@ const ReportPage: React.FC = () => {
         throw new Error("No authentication token found. Please log in again.");
       }
       
-      await axios.delete(`http://localhost:3000/api/asset/${id}`, {
+      await axios.delete(`https://asset-backend-1976da1bf0ad.herokuapp.com/api/asset/${id}`, {
         headers: { "x-auth-token": token },
       });
       
