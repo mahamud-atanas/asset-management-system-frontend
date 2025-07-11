@@ -54,8 +54,8 @@ const AssetForm: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userResponse = await axios.get('http://localhost:3000/api/users');
-        const managerResponse = await axios.get('http://localhost:3000/api/users');
+        const userResponse = await axios.get('https://asset-backend-1976da1bf0ad.herokuapp.com/api/users');
+        const managerResponse = await axios.get('https://asset-backend-1976da1bf0ad.herokuapp.com/api/users');
 
         setUsers(userResponse.data);
         setManagers(managerResponse.data);
@@ -128,7 +128,7 @@ const AssetForm: React.FC = () => {
     }
 
     try {
-      const response = await axios.post("http://localhost:3000/api/asset", formData, {
+      const response = await axios.post("https://asset-backend-1976da1bf0ad.herokuapp.com/api/asset", formData, {
         headers: {
           "Content-Type": "application/json",
           "x-auth-token": token,
