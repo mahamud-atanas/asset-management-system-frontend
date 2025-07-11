@@ -133,7 +133,7 @@ const ReportPage: React.FC = () => {
             user: user?._id || ""  // If user is also required as a string
         };
 
-        await axios.put(`http://localhost:3000/api/asset/${_id}`, updatedAsset, {
+        await axios.put(`https://asset-backend-1976da1bf0ad.herokuapp.com/api/asset/${_id}`, updatedAsset, {
             headers: { "x-auth-token": token },
         });
 
