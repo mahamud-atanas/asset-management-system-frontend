@@ -17,7 +17,7 @@ const ViewUsers: React.FC = () => {
           throw new Error("No authentication token found. Please log in again.");
         }
 
-        const response = await axios.get("http://localhost:3000/api/users", {
+        const response = await axios.get("https://asset-backend-1976da1bf0ad.herokuapp.com/api/users", {
           headers: {
             "x-auth-token": token,
           },
