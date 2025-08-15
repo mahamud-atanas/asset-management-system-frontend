@@ -39,6 +39,7 @@ const App = () => {
             <Route path="reportPage" element={<ReportPage />} />
             <Route path="viewUsers" element={<ViewUsers />} />
             <Route path="crudePage" element={<Crudepage />} />
+            <Route path="adminRequestApproval" element={<AdminRequestApproval />} />
           </Route>
 
           {/* Super Admin Routes */}
