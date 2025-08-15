@@ -197,6 +197,12 @@ const Sidebar = () => {
                 </a>
               </li>
               <li className="nav-item">
+                    <Link className="nav-link" to="/admin/AdminRequestApproval">
+                      <i className="fas fa-list nav-icon"></i>
+                      <p>Aprove</p>
+                    </Link>
+                  </li>
+              <li className="nav-item">
                 <a href="#" className="nav-link">
                   <i className="nav-icon fas fa-bell"></i>
                   <p>Notifications</p>
