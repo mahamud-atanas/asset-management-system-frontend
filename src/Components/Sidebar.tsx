@@ -75,7 +75,7 @@ const Sidebar = () => {
       console.log('Submitting user data:', formData);
   
       const response = await axios.post(
-        // 'https://asset-backend-1976da1bf0ad.herokuapp.com/api/users',
+         'https://asset-backend-1976da1bf0ad.herokuapp.com/api/users',
         {
           firstname,  // lowercase to match backend
           lastname,   // lowercase to match backend
