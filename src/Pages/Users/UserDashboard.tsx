@@ -1,197 +1,262 @@
-import { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  LineChart,
-  Line,
-} from "recharts";
-import { Link } from "react-router-dom";
+import Select from "react-select";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-// Define Asset Type
-interface AssetType {
-  dateOfRegister: string;
-  category: string;
-  totalAmount: number;
+interface RequestFormData {
+  firstName: string;
+  lastName: string;
+  date: string;
+  department: string;
+  departmentManager: string;
+  assetType: string;
+  quantity: number | "";
+  description: string;
 }
 
-// Define Data Types for Charts
-interface LineChartData {
-  name: string;
-  count: number;
-}
+const AssetStationeryRequestForm: React.FC = () => {
+  const [formData, setFormData] = useState<RequestFormData>({
+    firstName: "",
+    lastName: "",
+    date: new Date().toISOString().split("T")[0],
+    department: "",
+    departmentManager: "",
+    assetType: "",
+    quantity: "",
+    description: "",
+  });
 
-interface BarChartData {
-  name: string;
-  value: number;
-}
-
-// Define InfoBox Props
-interface InfoBoxProps {
-  color: string;
-  title: string;
-  value: string | number;
-  icon: string;
-}
-
-// Define ChartCard Props
-interface ChartCardProps {
-  title: string;
-  children: React.ReactNode;
-}
-
-const UserDashboard = () => {
-  const [totalAssets, setTotalAssets] = useState<number>(0);
-  const [totalUsers, setTotalUsers] = useState<number>(0);
-  const [totalAmount, setTotalAmount] = useState<number>(0);
-  const [categoryTotals, setCategoryTotals] = useState<Record<string, number>>({});
-  const [lineChartData, setLineChartData] = useState<LineChartData[]>([]);
-  const [barChartData, setBarChartData] = useState<BarChartData[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [managers, setManagers] = useState<{ _id: string; firstname: string }[]>([]);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchManagers = async () => {
       try {
-        // Fetch total users
-        const usersResponse = await axios.get<{ length: number }>("http://localhost:3000/api/users");
-        setTotalUsers(usersResponse.data.length);
-
-        // Fetch all assets
-        const assetsResponse = await axios.get<AssetType[]>("http://localhost:3000/api/asset");
-        const assets = assetsResponse.data;
-        setTotalAssets(assets.length);
-
-        console.log("Fetched Assets:", assets);
-
-        // ✅ Calculate Total Amount
-        const calculatedTotalAmount = assets.reduce((sum, asset) => sum + (asset.totalAmount || 0), 0);
-        setTotalAmount(calculatedTotalAmount);
-
-        // ✅ Group Assets by Category
-        const categoryGroups: Record<string, number> = {};
-        assets.forEach((asset) => {
-          categoryGroups[asset.category] = (categoryGroups[asset.category] || 0) + 1;
-        });
-        setCategoryTotals(categoryGroups);
-        console.log("Category Totals:", categoryGroups);
-
-        // ✅ Group Assets by Date for Line Chart
-        const groupedByDate: Record<string, number> = {};
-        assets.forEach((asset) => {
-          if (asset.dateOfRegister) {
-            const date = asset.dateOfRegister.split("T")[0]; // Format: YYYY-MM-DD
-            groupedByDate[date] = (groupedByDate[date] || 0) + 1;
-          }
-        });
-
-        // ✅ Set State for Line Chart Data
-        setLineChartData(
-          Object.entries(groupedByDate).map(([date, count]) => ({
-            name: date,
-            count: count || 0, // Ensuring value is not undefined
-          }))
-        );
-
-        // ✅ Prepare Bar Chart Data (Category-wise Count)
-        setBarChartData(
-          Object.entries(categoryGroups).map(([category, value]) => ({
-            name: category,
-            value: value || 0, // Ensuring value is not undefined
-          }))
-        );
-      } catch (error) {
-        console.error("Error fetching dashboard data:", error);
+        const res = await axios.get("http://localhost:5000/api/users");
+        setManagers(res.data);
+      } catch (err) {
+        console.error("Error fetching managers:", err);
+        toast.error("Failed to load department managers.");
       }
     };
-
-    fetchData();
+    fetchManagers();
   }, []);
 
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSelectChange = (selectedOption: any, field: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: selectedOption ? selectedOption.value : "",
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("No authentication token found. Please log in.");
+      return;
+    }
+
+    try {
+      const response = await axios.post("http://localhost:5000/api/request", formData, {
+        headers: {
+          "Content-Type": "application/json",
+          "x-auth-token": token,
+        },
+      });
+
+      if (response.status === 200 || response.status === 201) {
+        toast.success("Request submitted successfully!");
+        setFormData({
+          firstName: "",
+          lastName: "",
+          date: new Date().toISOString().split("T")[0],
+          department: "",
+          departmentManager: "",
+          assetType: "",
+          quantity: "",
+          description: "",
+        });
+      } else {
+        toast.error("Failed to submit request.");
+      }
+    } catch (error: any) {
+      console.error("Error submitting request:", error.response?.data || error.message);
+      toast.error(`Error: ${error.response?.data?.message || error.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div>
-      {/* Overall Summary Boxes */}
-      <div className="row">
-        <InfoBox color="info" title="Total Assets" value={totalAssets} icon="fas fa-shopping-cart" />
-        <InfoBox color="success" title="Total Users" value={totalUsers} icon="fas fa-users" />
-        <InfoBox color="primary" title="Total Amount" value={`TZS ${totalAmount.toLocaleString()}`} icon="fas fa-coins" />
-      </div>
+    <>
+      <ToastContainer />
+      <div className="card card-primary mt-4">
+        <div
+          className="card-header"
+          style={{ background: "linear-gradient(90deg, #007bff, #0056b3)" }}
+        >
+          <h3 className="card-title">
+            <i className="fas fa-box-open mr-2"></i> Asset & Stationery Request Form
+          </h3>
+        </div>
+        <form onSubmit={handleSubmit}>
+          <div className="card-body" style={{ backgroundColor: "#f8f9fa" }}>
+            <div className="row">
+              {/* First Name */}
+              <div className="col-md-6 mb-3">
+                <label>
+                  <i className="fas fa-user mr-2"></i> First Name
+                </label>
+                <input
+                  type="text"
+                  name="firstName"
+                  className="form-control"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                  placeholder="Enter first name"
+                  required
+                />
+              </div>
+              {/* Last Name */}
+              <div className="col-md-6 mb-3">
+                <label>
+                  <i className="fas fa-user mr-2"></i> Last Name
+                </label>
+                <input
+                  type="text"
+                  name="lastName"
+                  className="form-control"
+                  value={formData.lastName}
+                  onChange={handleChange}
+                  placeholder="Enter last name"
+                  required
+                />
+              </div>
+              {/* Date */}
+              <div className="col-md-6 mb-3">
+                <label>
+                  <i className="fas fa-calendar-alt mr-2"></i> Date
+                </label>
+                <input
+                  type="date"
+                  name="date"
+                  className="form-control"
+                  value={formData.date}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              {/* Department */}
+              <div className="col-md-6 mb-3">
+                <label>
+                  <i className="fas fa-building mr-2"></i> Department
+                </label>
+                <input
+                  type="text"
+                  name="department"
+                  className="form-control"
+                  value={formData.department}
+                  onChange={handleChange}
+                  placeholder="Enter department"
+                  required
+                />
+              </div>
+              {/* Department Manager (Dropdown) */}
+              <div className="col-md-6 mb-3">
+                <label>
+                  <i className="fas fa-user-tie mr-2"></i> Department Manager
+                </label>
+                <Select
+                  options={managers.map((m) => ({
+                    value: m._id,
+                    label: m.firstname,
+                  }))}
+                  isSearchable
+                  onChange={(selectedOption) =>
+                    handleSelectChange(selectedOption, "departmentManager")
+                  }
+                  placeholder="Search and Select Manager"
+                />
+              </div>
+              {/* Asset Type */}
+              <div className="col-md-6 mb-3">
+                <label>
+                  <i className="fas fa-cogs mr-2"></i> Asset Type
+                </label>
+                <select
+                  name="assetType"
+                  className="form-control"
+                  value={formData.assetType}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">Select asset type</option>
+                  <option value="Laptop">Laptop</option>
+                  <option value="Printer">Printer</option>
+                  <option value="Stationery">Stationery</option>
+                  <option value="Furniture">Furniture</option>
+                </select>
+              </div>
+              {/* Quantity */}
+              <div className="col-md-6 mb-3">
+                <label>
+                  <i className="fas fa-sort-numeric-up mr-2"></i> Quantity
+                </label>
+                <input
+                  type="number"
+                  name="quantity"
+                  className="form-control"
+                  value={formData.quantity}
+                  onChange={handleChange}
+                  min={1}
+                  required
+                />
+              </div>
+              {/* Description */}
+              <div className="col-12 mb-3">
+                <label>
+                  <i className="fas fa-align-left mr-2"></i> Description
+                </label>
+                <textarea
+                  name="description"
+                  className="form-control"
+                  rows={3}
+                  value={formData.description}
+                  onChange={handleChange}
+                  placeholder="Enter additional details"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+          <div className="card-footer text-right">
+  <button type="submit" className="btn btn-primary" disabled={loading}>
+    {loading ? (
+      <>
+        <i className="fas fa-spinner fa-spin mr-2"></i> Processing...
+      </>
+    ) : (
+      <>
+        <i className="fas fa-paper-plane mr-2"></i> Submit Request
+      </>
+    )}
+  </button>
+</div>
 
-      {/* Category-Wise Summary */}
-      <div className="row">
-        <InfoBox color="primary" title="Computers & Accessories" value={categoryTotals["Computers & Accessories"] || 0} icon="fas fa-laptop" />
-        <InfoBox color="success" title="Furniture & Equipments" value={categoryTotals["Furniture & Equipments"] || 0} icon="fas fa-chair" />
-        <InfoBox color="warning" title="Intangible Assets" value={categoryTotals["Intangible Assets"] || 0} icon="fas fa-lightbulb" />
-        <InfoBox color="danger" title="Land & Buildings" value={categoryTotals["Land & Buildings"] || 0} icon="fas fa-building" />
-        <InfoBox color="info" title="Leasehold Improvement" value={categoryTotals["Leasehold Improvement"] || 0} icon="fas fa-tools" />
-        <InfoBox color="dark" title="Motor Vehicles" value={categoryTotals["Motor Vehicles"] || 0} icon="fas fa-car" />
-        <InfoBox color="secondary" title="Plan & Machinery" value={categoryTotals["Plan & Machinery"] || 0} icon="fas fa-industry" />
+        </form>
       </div>
-
-      {/* Charts */}
-      <div className="row">
-        <ChartCard title="Assets Registered Over Time">
-          <ResponsiveContainer width="100%" height={400}>
-            <LineChart data={lineChartData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Line type="monotone" dataKey="count" stroke="#4BC0C0" />
-            </LineChart>
-          </ResponsiveContainer>
-        </ChartCard>
-
-        <ChartCard title="Asset Categories Overview">
-          <ResponsiveContainer width="100%" height={400}>
-            <BarChart data={barChartData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="value" fill="#36A2EB" />
-            </BarChart>
-          </ResponsiveContainer>
-        </ChartCard>
-      </div>
-    </div>
+    </>
   );
 };
 
-// ✅ InfoBox Component
-const InfoBox: React.FC<InfoBoxProps> = ({ color, title, value, icon }) => (
-  <div className="col-lg-4 col-md-6 col-12">
-    <div className={`small-box bg-${color}`}>
-      <div className="inner">
-        <h3>{value}</h3>
-        <p>{title}</p>
-      </div>
-      <div className="icon">
-        <i className={icon}></i>
-      </div>
-      <Link to="#" className="small-box-footer">
-        More info <i className="fas fa-arrow-circle-right"></i>
-      </Link>
-    </div>
-  </div>
-);
-
-// ✅ Chart Card Component
-const ChartCard: React.FC<ChartCardProps> = ({ title, children }) => (
-  <div className="col-lg-6 col-12">
-    <div className="card">
-      <div className="card-header">
-        <h3 className="card-title">{title}</h3>
-      </div>
-      <div className="card-body">{children}</div>
-    </div>
-  </div>
-);
-
-export default UserDashboard;
+export default AssetStationeryRequestForm;
