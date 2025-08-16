@@ -17,7 +17,7 @@ import { ToastContainer } from "react-toastify";
 import ViewUsers from "./Components/ViewUsers";
 import Crudepage from "./Components/Crudepage";
 import UserLayout from "./Pages/Users/UserLayout";
-import AdminRequestApproval from "./Components/AdminRequestApproval";
+import Adminreq from "./Components/Adminreq";
 
 const App = () => {
   return (
@@ -40,7 +40,7 @@ const App = () => {
             <Route path="reportPage" element={<ReportPage />} />
             <Route path="viewUsers" element={<ViewUsers />} />
             <Route path="crudePage" element={<Crudepage />} />
-            <Route path="adminRequestApproval" element={<AdminRequestApproval />} />
+            <Route path="adminreq" element={<Adminreq />} />
           </Route>
 
           {/* Super Admin Routes */}
