@@ -180,7 +180,7 @@ const AssetStationeryRequestForm: React.FC = () => {
                 <Select
                   options={managers.map((m) => ({
                     value: m._id,
-                    label: m.firstname,
+                    label: m.firstname,m.lastname,
                   }))}
                   isSearchable
                   onChange={(selectedOption) =>
