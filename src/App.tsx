@@ -17,7 +17,7 @@ import { ToastContainer } from "react-toastify";
 import ViewUsers from "./Components/ViewUsers";
 import Crudepage from "./Components/Crudepage";
 import UserLayout from "./Pages/Users/UserLayout";
-import AdminRequestApproval from "./components/AdminRequestApproval";
+import AdminRequestApproval from "./Components/AdminRequestApproval";
 
 const App = () => {
   return (
