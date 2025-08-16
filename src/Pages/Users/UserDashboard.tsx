@@ -108,7 +108,7 @@ const AssetStationeryRequestForm: React.FC = () => {
           style={{ background: "linear-gradient(90deg, #007bff, #0056b3)" }}
         >
           <h3 className="card-title">
-            <i className="fas fa-box-open mr-2"></i> Asset & Stationery Request Form
+            <i className="fas fa-box-open mr-2"></i> Asset & Stationery Request Forms
           </h3>
         </div>
         <form onSubmit={handleSubmit}>
