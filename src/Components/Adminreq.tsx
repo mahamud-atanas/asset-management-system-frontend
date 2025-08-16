@@ -61,7 +61,7 @@ const Adminreq: React.FC = () => {
       }
 
       await axios.put(
-        `https://asset-backend-1976da1bf0ad.herokuapp.com/${id}/status`,
+        `https://asset-backend-1976da1bf0ad.herokuapp.com/api/request/${id}/status`,
         { status },
         {
           headers: {
@@ -226,6 +226,7 @@ const Adminreq: React.FC = () => {
 };
 
 export default Adminreq;
+
 
 
 
