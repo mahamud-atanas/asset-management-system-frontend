@@ -33,7 +33,7 @@ const AssetStationeryRequestForm: React.FC = () => {
   useEffect(() => {
     const fetchManagers = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/users");
+        const res = await axios.get("https://asset-backend-1976da1bf0ad.herokuapp.com/api/users");
         setManagers(res.data);
       } catch (err) {
         console.error("Error fetching managers:", err);
