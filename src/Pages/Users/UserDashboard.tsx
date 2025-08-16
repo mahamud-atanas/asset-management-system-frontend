@@ -68,7 +68,7 @@ const AssetStationeryRequestForm: React.FC = () => {
     }
 
     try {
-      const response = await axios.post("http://localhost:5000/api/request", formData, {
+      const response = await axios.post("https://asset-backend-1976da1bf0ad.herokuapp.com/api/request", formData, {
         headers: {
           "Content-Type": "application/json",
           "x-auth-token": token,
