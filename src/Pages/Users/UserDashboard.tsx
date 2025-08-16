@@ -28,7 +28,7 @@ const AssetStationeryRequestForm: React.FC = () => {
   });
 
   const [loading, setLoading] = useState(false);
-  const [managers, setManagers] = useState<{ _id: string; firstname: string }[]>([]);
+  const [managers, setManagers] = useState<{ _id: string; firstname: string; lastname: string }[]>([]);
 
   useEffect(() => {
     const fetchManagers = async () => {
@@ -180,7 +180,7 @@ const AssetStationeryRequestForm: React.FC = () => {
                 <Select
                   options={managers.map((m) => ({
                     value: m._id,
-                    label: `${m.firstName} ${m.firstName}`
+                    label: `${m.firstname} ${m.lastame}`
                   }))}
                   isSearchable
                   onChange={(selectedOption) =>
