@@ -30,6 +30,7 @@ const AssetStationeryRequestForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [managers, setManagers] = useState<{ _id: string; firstname: string; lastname: string }[]>([]);
 
+
   useEffect(() => {
     const fetchManagers = async () => {
       try {
@@ -178,16 +179,17 @@ const AssetStationeryRequestForm: React.FC = () => {
                   <i className="fas fa-user-tie mr-2"></i> Department Manager
                 </label>
                 <Select
-                  options={managers.map((m) => ({
-                    value: m._id,
-                    label: `${m.firstname} ${m.lastame}`
-                  }))}
-                  isSearchable
-                  onChange={(selectedOption) =>
-                    handleSelectChange(selectedOption, "departmentManager")
-                  }
-                  placeholder="Search and Select Manager"
-                />
+  options={managers.map((m) => ({
+    value: m._id,
+    label: `${m.firstname} ${m.lastname}`,
+  }))}
+  isSearchable
+  onChange={(selectedOption) =>
+    handleSelectChange(selectedOption, "departmentManager")
+  }
+  placeholder="Search and Select Manager"
+/>
+
               </div>
               {/* Asset Type */}
               <div className="col-md-6 mb-3">
