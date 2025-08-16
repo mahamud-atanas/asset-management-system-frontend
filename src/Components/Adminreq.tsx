@@ -17,7 +17,7 @@ interface Request {
   status: string;
 }
 
-const AdminRequestApproval: React.FC = () => {
+const Adminreq: React.FC = () => {
   const [requests, setRequests] = useState<Request[]>([]);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
@@ -225,5 +225,6 @@ const AdminRequestApproval: React.FC = () => {
   );
 };
 
-export default AdminRequestApproval;
+export default Adminreq;
+
 
