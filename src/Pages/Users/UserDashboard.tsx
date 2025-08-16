@@ -203,8 +203,10 @@ const AssetStationeryRequestForm: React.FC = () => {
                 >
                   <option value="">Select asset type</option>
                   <option value="Laptop">Laptop</option>
+                  <option value="Laptop">Desktop</option>
                   <option value="Printer">Printer</option>
-                  <option value="Stationery">Stationery</option>
+                  <option value="Stationery">Stationery items</option>
+                  <option value="Furniture">Cartriedge</option>
                   <option value="Furniture">Furniture</option>
                 </select>
               </div>
