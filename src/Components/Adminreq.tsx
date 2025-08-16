@@ -30,7 +30,7 @@ const Adminreq: React.FC = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get("http://localhost:5000/api/request", {
+      const res = await axios.get("https://asset-backend-1976da1bf0ad.herokuapp.com/api/request", {
         headers: { "x-auth-token": token },
       });
 
@@ -226,5 +226,6 @@ const Adminreq: React.FC = () => {
 };
 
 export default Adminreq;
+
 
 
