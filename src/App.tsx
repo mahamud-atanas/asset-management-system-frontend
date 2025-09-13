@@ -27,7 +27,7 @@ const App = () => {
       <ToastContainer />
         <Routes>
           {/* Redirect to Admin Dashboard */}
-          <Route path="/" element={<Navigate to="/admin" />} />
+          <Route path="/" element={<Navigate to="/dashboard" />} />
           <Route path="/dashboard" element={<DashboardRedirect />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
 
