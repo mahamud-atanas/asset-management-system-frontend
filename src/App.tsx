@@ -19,6 +19,7 @@ import Crudepage from "./Components/Crudepage";
 import UserLayout from "./Pages/Users/UserLayout";
 import Adminreq from "./Components/Adminreq";
 import RoleManager from "./Components/RoleManager";
+import UserRequests from "./Pages/Users/UserRequests";
 
 const App = () => {
   return (
