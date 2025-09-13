@@ -19,8 +19,6 @@ import Crudepage from "./Components/Crudepage";
 import UserLayout from "./Pages/Users/UserLayout";
 import Adminreq from "./Components/Adminreq";
 import RoleManager from "./Components/RoleManager";
-import UserRequests from "./Pages/Users/UserRequests";
-
 
 const App = () => {
   return (
@@ -44,25 +42,14 @@ const App = () => {
             <Route path="viewUsers" element={<ViewUsers />} />
             <Route path="crudePage" element={<Crudepage />} />
             <Route path="adminreq" element={<Adminreq />} />
-            <Route path="roles" element={<RoleManager />} />
-
+             <Route path="roles" element={<RoleManager />} />
           </Route>
 
           {/* Super Admin Routes */}
           <Route path="/superadmin" element={<ProtectedRoute role="superadmin"><SuperAdminDashboard /></ProtectedRoute>} />
 
           {/* User Routes */}
-           /* User (protected) + user assets route */
-<Route
-  path="/user"
-  element={
-    <ProtectedRoute role="user">
-      <UserLayout />
-    </ProtectedRoute>
-  }
-/>
-{/* ✅ Standalone match so /user/assets always works */}
-<Route
+          <Route
   path="/user"
   element={
     <ProtectedRoute role="user">
@@ -71,10 +58,7 @@ const App = () => {
   }
 >
   <Route path="assets" element={<ViewAsset />} /> {/* now inside layout */}
-  <Route path="userrequests" element={<UserRequests />} />
 </Route>
-
-
         </Routes>
       </Router>
     </AuthProvider>
