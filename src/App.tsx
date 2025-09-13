@@ -51,15 +51,15 @@ const App = () => {
           {/* Super Admin Routes */}
           <Route path="/superadmin" element={<ProtectedRoute role="superadmin"><SuperAdminDashboard /></ProtectedRoute>} />
 
-          {/* User Routes */}
-           /* User (protected) + user assets route */
-         <Route path="/user" element={ <ProtectedRoute role="user"><UserLayout /></ProtectedRoute>}/>
-         {/* ✅ Standalone match so /user/assets always works */}
-         <Route path="/user"  element={ <ProtectedRoute role="user"><UserLayout /></ProtectedRoute>}>
-         <Route path="assets" element={<ViewAsset />} /> {/* now inside layout */}
-         <Route path="userrequests" element={<UserRequests />} />
-         </Route>
-      </Routes>
+          <Route
+    path="/user"
+    element={<ProtectedRoute roles={['user']}><UserLayout /></ProtectedRoute>}
+  >
+    <Route index element={<Navigate to="userrequests" replace />} />
+    <Route path="assets" element={<ViewAsset />} />
+    <Route path="userrequests" element={<UserRequests />} />
+  </Route>
+</Routes>
       </Router>
     </AuthProvider>
   );
