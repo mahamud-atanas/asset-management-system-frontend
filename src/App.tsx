@@ -21,6 +21,7 @@ import Adminreq from "./Components/Adminreq";
 import RoleManager from "./Components/RoleManager";
 import UserRequests from "./Pages/Users/UserRequests";
 
+
 const App = () => {
   return (
     <AuthProvider>
@@ -43,7 +44,8 @@ const App = () => {
             <Route path="viewUsers" element={<ViewUsers />} />
             <Route path="crudePage" element={<Crudepage />} />
             <Route path="adminreq" element={<Adminreq />} />
-             <Route path="roles" element={<RoleManager />} />
+            <Route path="roles" element={<RoleManager />} />
+
           </Route>
 
           {/* Super Admin Routes */}
@@ -57,7 +59,7 @@ const App = () => {
          <Route path="assets" element={<ViewAsset />} /> {/* now inside layout */}
          <Route path="userrequests" element={<UserRequests />} />
          </Route>
-        </Routes>
+      </Routes>
       </Router>
     </AuthProvider>
   );
