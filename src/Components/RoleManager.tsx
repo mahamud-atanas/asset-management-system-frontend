@@ -14,7 +14,7 @@ type UserRow = {
   createdAt?: string;
 };
 
-const API = "http://asset-backend-1976da1bf0ad.herokuapp";
+const API = "https://asset-backend-1976da1bf0ad.herokuapp";
 
 // ---- LocalStorage keys for runtime override (no rebuild needed)
 const LS_URL_KEY = "roleUpdate.url";
