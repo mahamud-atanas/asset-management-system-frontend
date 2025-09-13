@@ -18,6 +18,7 @@ import ViewUsers from "./Components/ViewUsers";
 import Crudepage from "./Components/Crudepage";
 import UserLayout from "./Pages/Users/UserLayout";
 import Adminreq from "./Components/Adminreq";
+import RoleManager from "./Components/RoleManager";
 
 const App = () => {
   return (
@@ -41,6 +42,7 @@ const App = () => {
             <Route path="viewUsers" element={<ViewUsers />} />
             <Route path="crudePage" element={<Crudepage />} />
             <Route path="adminreq" element={<Adminreq />} />
+             <Route path="roles" element={<RoleManager />} />
           </Route>
 
           {/* Super Admin Routes */}
