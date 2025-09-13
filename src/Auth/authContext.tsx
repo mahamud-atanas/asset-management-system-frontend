@@ -1,70 +1,86 @@
-import { createContext, useContext, useState, useEffect } from "react";
+/* @refresh reset */
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 
-interface User {
+export type Role = "admin" | "superadmin" | "user";
+
+type User = {
   _id: string;
   email: string;
-  password : string;
+  role: Role;
   profileImage?: string;
-  role: "admin" | "superadmin" | "user";
-}
+  iat?: number;
+  exp?: number;
+};
 
-interface AuthContextType {
+type AuthContextType = {
   user: User | null;
   login: (token: string) => void;
   logout: () => void;
   isAuthenticated: () => boolean;
-}
+  isAdmin: () => boolean;
+  isSuper: () => boolean;
+  isUser: () => boolean;
+};
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// ---- helper to normalize any JWT payload shape
+function normalize(decoded: any): User {
+  const role = (decoded?.role || "").toString().toLowerCase();
+  const _id = decoded?._id || decoded?.id || "";
+  return {
+    _id,
+    email: decoded?.email || "",
+    role: (role as Role) || "user",
+    iat: decoded?.iat,
+    exp: decoded?.exp,
+    profileImage: decoded?.profileImage,
+  };
+}
+
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(() => {
-    const storedToken = localStorage.getItem("token");
-    if (storedToken) {
-      try {
-        return jwtDecode<User>(storedToken);
-      } catch (error) {
-        console.error("Invalid token:", error);
-        localStorage.removeItem("token");
-      }
+    const token = localStorage.getItem("token");
+    if (!token) return null;
+    try {
+      const raw = jwtDecode<any>(token);
+      return normalize(raw);
+    } catch {
+      localStorage.removeItem("token");
+      return null;
     }
-    return null;
   });
 
-  let inactivityTimer: NodeJS.Timeout | null = null;
-
   useEffect(() => {
-    const resetTimer = () => {
-      if (inactivityTimer) clearTimeout(inactivityTimer);
-      inactivityTimer = setTimeout(() => {
+    let timer: number | null = null;
+    const reset = () => {
+      if (timer) window.clearTimeout(timer);
+      timer = window.setTimeout(() => {
         logout();
         alert("You have been logged out due to inactivity.");
-      }, 2400000); // 4 minutes (240,000 milliseconds)
+      }, 240_000);
     };
-
-    // Reset timer on any user interaction
-    window.addEventListener("mousemove", resetTimer);
-    window.addEventListener("keydown", resetTimer);
-    window.addEventListener("click", resetTimer);
-    window.addEventListener("scroll", resetTimer);
-
-    // Start the timer when the component mounts
-    resetTimer();
-
+    reset();
+    window.addEventListener("mousemove", reset);
+    window.addEventListener("keydown", reset);
+    window.addEventListener("click", reset);
+    window.addEventListener("scroll", reset);
     return () => {
-      if (inactivityTimer) clearTimeout(inactivityTimer);
-      window.removeEventListener("mousemove", resetTimer);
-      window.removeEventListener("keydown", resetTimer);
-      window.removeEventListener("click", resetTimer);
-      window.removeEventListener("scroll", resetTimer);
+      if (timer) window.clearTimeout(timer);
+      window.removeEventListener("mousemove", reset);
+      window.removeEventListener("keydown", reset);
+      window.removeEventListener("click", reset);
+      window.removeEventListener("scroll", reset);
     };
-  }, [user]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?._id]);
 
   const login = (token: string) => {
     localStorage.setItem("token", token);
-    const decodedUser = jwtDecode<User>(token);
-    setUser(decodedUser);
+    const raw = jwtDecode<any>(token);
+    const norm = normalize(raw);
+    setUser(norm);
   };
 
   const logout = () => {
@@ -72,21 +88,30 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setUser(null);
   };
 
-  const isAuthenticated = () => {
-    return user !== null;
+  const isAuthenticated = () => user !== null;
+
+  const helpers = useMemo(
+    () => ({
+      isAdmin: () => user?.role === "admin",
+      isSuper: () => user?.role === "superadmin",
+      isUser: () => user?.role === "user",
+    }),
+    [user]
+  );
+
+  const value: AuthContextType = {
+    user,
+    login,
+    logout,
+    isAuthenticated,
+    ...helpers,
   };
 
-  return (
-    <AuthContext.Provider value={{ user, login, logout, isAuthenticated }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
+export const useAuth = (): AuthContextType => {
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error("useAuth must be used within an AuthProvider");
+  return ctx;
 };
