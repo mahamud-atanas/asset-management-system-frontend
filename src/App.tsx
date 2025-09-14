@@ -53,7 +53,7 @@ const App = () => {
 
           {/* User Routes */}
            /* User (protected) + user assets route */
-         <Route path="/user" element={ <ProtectedRoute role="user"><UserLayout /></ProtectedRoute>}/>
+         <Route path="/user" element={ <ProtectedRoute roles="user"><UserLayout /></ProtectedRoute>}/>
          {/* ✅ Standalone match so /user/assets always works */}
          <Route path="/user"  element={ <ProtectedRoute role="user"><UserLayout /></ProtectedRoute>}>
          <Route path="assets" element={<ViewAsset />} /> {/* now inside layout */}
