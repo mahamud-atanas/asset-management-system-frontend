@@ -51,7 +51,7 @@ const App = () => {
           {/* Super Admin Routes */}
           <Route path="/superadmin" element={<ProtectedRoute role="superadmin"><SuperAdminDashboard /></ProtectedRoute>} />
 
-          <Route path="/user" element={<ProtectedRoute role={['user']}><UserLayout /></ProtectedRoute>} >
+          <Route path="/user" element={<ProtectedRoute roles={['user']}><UserLayout /></ProtectedRoute>} >
           <Route index element={<Navigate to="userrequests" replace />} />
           <Route path="assets" element={<ViewAsset />} />
           <Route path="userrequests" element={<UserRequests />} />
