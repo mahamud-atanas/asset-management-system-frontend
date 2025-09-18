@@ -71,7 +71,7 @@ const Sidebar = () => {
       setIsSubmitting(false);
       return;
     }
-    if (firstname.length < 2 || lastname.length < 2) {
+    if (firstname.length < 5 || lastname.length < 5) {
       toast.error('First and last names must be at least 2 characters');
       setIsSubmitting(false);
       return;
